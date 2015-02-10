@@ -522,11 +522,10 @@
             let NERDTreeShowBookmarks=1
             let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
             let NERDTreeChDirMode=0
-            let NERDTreeQuitOnOpen=1
+            let NERDTreeQuitOnOpen=0
             let NERDTreeMouseMode=2
             let NERDTreeShowHidden=1
             let NERDTreeKeepTreeInNewTab=1
-            let NERDTreeQuitOnOpen=1
             let g:nerdtree_tabs_open_on_gui_startup=0
             let g:NERDTreeWinSize=31
             let g:NERDTreeWinPos='left'
@@ -624,7 +623,7 @@
     " TagBar {
         if isdirectory(expand("~/.vim/bundle/tagbar/"))
             nnoremap <silent> <leader>tt :TagbarToggle<CR>
-
+            let g:tagbar_autoshowtag = 1
             " If using go please install the gotags program using the following
             " go install github.com/jstemmer/gotags
             " And make sure gotags is in your path
@@ -1333,3 +1332,47 @@ endif
 
 "vim-bbye configuration"
     nnoremap bd :Bdelete<CR>
+
+
+"" Detect which plugins are open
+function! ToggleNERDTreeAndTagbar()
+ let w:jumpbacktohere = 1
+ if exists('t:NERDTreeBufName')
+     let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
+ else
+     let nerdtree_open = 0
+ endif
+ let tagbar_open = bufwinnr('__Tagbar__') != -1
+
+         " Perform the appropriate action
+ if nerdtree_open && tagbar_open
+     NERDTreeClose
+     TagbarClose
+ elseif tagbar_open
+     NERDTree
+     wincmd K
+     wincmd j
+     wincmd L
+ elseif nerdtree_open
+     TagbarOpen
+     wincmd K
+     wincmd j
+     wincmd L
+ else
+     TagbarOpen
+     NERDTree
+     wincmd K
+     wincmd j
+     wincmd L
+ endif
+
+" Jump back to the original window
+ for window in range(1, winnr('$'))
+     execute window . 'wincmd w'
+     if exists('w:jumpbacktohere')
+     unlet w:jumpbacktohere
+     break
+     endif
+ endfor  
+endfunction
+nnoremap wm :call ToggleNERDTreeAndTagbar()<CR>"

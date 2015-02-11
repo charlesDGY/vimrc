@@ -1164,7 +1164,7 @@
 
 " ctags mapping
     map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-
+    map <C-F11> :!cscope –Rbq .<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CSCOPE settings for vim           
@@ -1374,5 +1374,8 @@ function! ToggleNERDTreeAndTagbar()
      break
      endif
  endfor  
+ for i in range(1, 60)
+     wincmd >
+ endfor
 endfunction
-nnoremap wm :call ToggleNERDTreeAndTagbar()<CR>"
+nnoremap wm :call ToggleNERDTreeAndTagbar()<CR>

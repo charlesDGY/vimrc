@@ -1162,9 +1162,53 @@
 ""*     dgy addition
 ""*********************************************************************************
 
+"进行版权声明的设置
+""添加或更新头
+map <F4> :call TitleDet()<cr>
+function AddTitle()
+    call append( 0, "/******************************************************************************")
+    call append( 1, " *")
+    call append( 2, " *       COPYRIGHT NOTICE")
+    call append( 3, " *       Copyright (c) ".strftime("%Y"))
+    call append( 4, " *       All rights reserved")
+    call append( 5, " *")
+    call append( 6, " *       @author       :  Gaoyang Dai")
+    call append( 7, " *       @email        :  edward.d.erlic@gmail.com")
+    call append( 8, " *       @file         :  ".expand("%:p:h")."/".expand("%:t"))
+    call append( 9, " *       @date         :  ".strftime("%Y/%m/%d %H:%M"))
+    call append(10, " *       @description  :  ")
+    call append(11, " *")
+    call append(12, " *****************************************************************************/")
+    call append(13, "")
+    echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
+endfunction
+
+function UpdateTitle()
+    normal m'
+    execute ' /*       @date      /s@:.*$@\=strftime(":  %Y-%m-%d %H:%M")@'
+    normal ''
+    normal mk
+    execute ' /*       @file      /s@:.*$@\=":  ".expand("%:p:h")."/".expand("%:t")@'
+    execute "noh"
+    normal 'k
+    echohl WarningMsg | echo "Successful in updating the copy right." | echohl None
+endfunction"'
+
+function TitleDet()
+    let n = 3
+    let line = getline(n)
+    let str = ' *       COPYRIGHT NOTICE$'
+    if line =~ str
+        call UpdateTitle()
+        return
+    endif
+    call AddTitle()
+    
+endfunction
+
 " ctags mapping
-    map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-    map <C-F11> :!cscope –Rbq .<CR>
+    map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>
+    map <C-F11> :!cscope -Rbq<CR><CR> :cs add cscope.out<CR> :cs reset<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CSCOPE settings for vim           
@@ -1379,3 +1423,6 @@ function! ToggleNERDTreeAndTagbar()
  endfor
 endfunction
 nnoremap wm :call ToggleNERDTreeAndTagbar()<CR>
+
+"设置折叠方式"
+ set foldmethod=indent
